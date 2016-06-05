@@ -3,14 +3,18 @@
 #include <wait.h>
 #include <unistd.h>
 
-int main(void){
+int main(int argc, char** argv){
 	int i,j,ji,jj,id1,id2,m,n,rc,status,pid;
-
-	m = 3;
-	n = 3;
+	if(argc != 3)
+	{
+		printf("Formato errado, por favor use./nome_do_arquivo m n\n");
+		exit(-1);
+	}
+	m = atoi(argv[1]);
+	n = atoi(argv[2]);
 
 	pid = getpid();
-	printf("-------------------------------\nPid Paizao = %d\n-------------------------------\n",pid);
+	printf("-------------------------------\nPid do processo principal = %d\n-------------------------------\n",pid);
 
 	ji = 0;
 	for (i = 0; i<=m ; i++){
