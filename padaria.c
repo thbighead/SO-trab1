@@ -103,6 +103,14 @@ int main(int argc, char** argv) {
 	n=atoi(argv[2]);
 	senhas_chamadas=malloc(m*sizeof(int));
 	senhas_clientes=malloc(n*sizeof(int));
+	for(i=0;i<m;i++)
+	{
+		senhas_chamadas[i]=-1;
+	}
+	for(i=0;i<n;i++)
+	{
+		senhas_clientes[i]=-1;
+	}
 	pthread_t *vendedores = (pthread_t*) malloc(m * sizeof(pthread_t));
 	pthread_t *clientes = (pthread_t*) malloc(n * sizeof(pthread_t));
 	vende=malloc(m*sizeof(sem_t));
