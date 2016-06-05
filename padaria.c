@@ -63,6 +63,7 @@ void *cliente (void * arg)
 	printf("Cliente %d chegou a padaria\n",tid);
 	sem_wait(&mutex_client);
 	minha_senha=prox_senha_cliente++;
+	senhas_clientes[tid]=minha_senha;
 	printf("Cliente %d pegou a senha %d\n",tid,minha_senha);
 	sem_post(&mutex_client);
 	printf("Cliente %d está procurando o padeiro\n",tid);
