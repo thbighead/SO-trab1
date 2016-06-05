@@ -8,27 +8,25 @@ sem_t mutex_vend,mutex_client;
 sem_t *vende;
 
 int n=0, m=0;
-int senha_cliente=0;
-int senha_padaria=0;
-int cliente_esperando=0;
-int vendedor_disponivel=0;
+int prox_senha_cliente=0;
+int prox_senha_padaria=0;
 int atendidos = 0;
-int *senha_chamada;
-int *senha_client;
+int *senhas_chamadas;
+int *senhas_clientes;
 
 
 void *vendedor (void * arg)
 {
 	int tid = *((int *) arg);
-	int i, client;
+	int i, cliente;
 	free(arg);
 	printf("Padeiro %d chegou a padaria\n",tid);
 	sem_wait(&mutex_vend);
 	while(atendidos<n)
 	{
-		senha_chamada[tid]=senha_padaria++;
+		senhas_chamadas[tid]=prox_senha_padaria++;
 		sem_post(&mutex_vend);
-		printf("Padeiro %d chamou a senha %d e espera o cliente\n",tid,senha_chamada[tid]);
+		printf("Padeiro %d chamou a senha %d e espera o cliente\n",tid,senhas_chamadas[tid]);
 		sem_wait(&vende[tid]);
 		if(atendidos>=n)
 		{
@@ -38,12 +36,13 @@ void *vendedor (void * arg)
 		printf("Padeiro %d está identificando o cliente\n",tid);
 		for(i=0;i<n;i++)
 		{
-			if(senha_client[i]==senha_chamada[tid])
+			if(senhas_clientes[i]==senhas_chamadas[tid])
 			{
-				client=i;
+				cliente=i;
+				break;
 			}
 		}
-		printf("Padeiro %d atendendo Cliente %d\n",tid,client);
+		printf("Padeiro %d atendendo Cliente %d\n",tid,cliente);
 		sem_wait(&vende[tid]);
 		sem_wait(&mutex_vend);
 		printf("Padeiro %d terminou a venda, iniciando outra\n",tid);
@@ -63,7 +62,7 @@ void *cliente (void * arg)
 	free(arg);
 	printf("Cliente %d chegou a padaria\n",tid);
 	sem_wait(&mutex_client);
-	minha_senha=senha_cliente++;
+	minha_senha=prox_senha_cliente++;
 	printf("Cliente %d pegou a senha %d\n",tid,minha_senha);
 	sem_post(&mutex_client);
 	printf("Cliente %d está procurando o padeiro\n",tid);
@@ -71,10 +70,11 @@ void *cliente (void * arg)
 	{
 		for(i=0;i<m;i++)
 		{
-			if(senha_chamada[i]==minha_senha)
+			if(senhas_chamadas[i]==minha_senha)
 			{
 				padeiro=i;
 				atendido=1;
+				break;
 			}
 		}
 	}
@@ -100,8 +100,8 @@ int main(int argc, char** argv) {
 	}
 	m=atoi(argv[1]);
 	n=atoi(argv[2]);
-	senha_chamada=malloc(m*sizeof(int));
-	senha_client=malloc(n*sizeof(int));
+	senhas_chamadas=malloc(m*sizeof(int));
+	senhas_clientes=malloc(n*sizeof(int));
 	pthread_t *vendedores = (pthread_t*) malloc(m * sizeof(pthread_t));
 	pthread_t *clientes = (pthread_t*) malloc(n * sizeof(pthread_t));
 	vende=malloc(m*sizeof(sem_t));
