@@ -20,7 +20,7 @@ void *vendedor (void * arg)
 	while(atendidos<cota)
 	{
 		printf("Padeiro %d chamou um cliente\n",tid);
-		sem_post(&fila[tid]);		
+		sem_post(&fila[tid]);
 		sem_wait(&atendimento[tid]);
 		sem_wait(&mutex_clientes);
 		client=cliente_atual[tid];
