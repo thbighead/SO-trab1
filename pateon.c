@@ -25,12 +25,12 @@ void *vendedor (void * arg)
 		sem_wait(&mutex_clientes);
 		client=cliente_atual[tid];
 		sem_post(&mutex_clientes);
-		printf("Padeiro %d está atendendo o cliente %d\n", tid, client);
+		printf("Padeiro %d esta atendendo o cliente %d\n", tid, client);
 		sem_wait(&atendimento[tid]);
 		atendidos++;
-		printf("Padeiro %d ira chamar o próximo cliente\n",tid);
+		printf("Padeiro %d ira chamar o proximo cliente\n",tid);
 	}
-	printf("Padeiro %d cumpriu a cota e está indo pra casa \n",tid);
+	printf("Padeiro %d cumpriu a cota e esta indo pra casa \n",tid);
 	pthread_exit(NULL);
 }
 
